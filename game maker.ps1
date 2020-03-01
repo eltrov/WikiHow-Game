@@ -1,4 +1,4 @@
-﻿# $WebResponse = Invoke-WebRequest "https://www.wikihow.com/Special:Randomizer"
+﻿
 $error.Clear()
 
 # First Run
@@ -6,13 +6,12 @@ $error.Clear()
 
 # Check for count file, create if not present
 Try { $try = Get-Item -path "$corefolder\count.txt" -ErrorAction Stop}
-Catch { New-Item -path "$corefolder\count.txt" -ItemType "file" -Value "0001" }
+Catch { $new = New-Item -path "$corefolder\count.txt" -ItemType "file" -Value "0001" }
 
 
 #endregion First Run
 
-$index = 0
-$corefolder = "C:\Users\Me\Dropbox\powershell\wikihow"
+$corefolder = (Get-Location).ToString()
 
 # $coreURL = "https://www.wikihow.com"
 # $date = Get-Date -format MM-dd-yyyy
@@ -22,28 +21,57 @@ $count = Get-Content "$corefolder\count.txt"
 
 $countInt = $count -as [int]
 
-New-Item -path $corefolder -name $count -ItemType "directory"
+$newFolder = New-Item -path $corefolder -name $count -ItemType "directory"
 
+$pageList = @()
 
+$index = 0
+$loopIndex = 0
+$loopCount = 10
 
-
-# Begin Loop
-#region Begin Loop
-
+while ($loopIndex -lt $loopCount)
+{
+$loopDisplay = $loopIndex + 1
+# New Web Request each loop
+$WebResponse = Invoke-WebRequest "https://www.wikihow.com/Special:Randomizer"
 
 # Get Page Title
 #region Get Title
 $Content = $webresponse.Content
 
-$start = $Content.IndexOf("<title>")
+$end = $Content.IndexOf("</title>")
 
-$end = $Content.IndexOf("</title>") - 17
+$top = $Content.Substring(0,$end)
 
-$top = $Content.Substring(7,$end)
+$start = $Content.IndexOf("<title>") + 7
 
-$title = $top.Substring($start)
+$rawtitle = $top.Substring($start)
 
-$title
+######################################
+$RawTitle
+
+# remove colons!!
+if ($RawTitle -like "*:*")
+{
+$colonIndex = $RawTitle.IndexOf(":")
+$RawTitle = $RawTitle.Substring(0,$colonIndex)
+}
+else {}
+
+# remove "(with Pictures)"
+if ($RawTitle -like "*(with pictures)")
+{
+$IndexOfParenthesis = $rawtitle.IndexOf("(with")
+$RawTitle = $RawTitle.Substring(0,$IndexOfParenthesis)
+}
+else {}
+
+$FinalTitle = $rawtitle
+#>
+
+
+$Finaltitle
+
 #endregion Get Title
 
 $random = Get-Random -min 0 -max ($webresponse.Images.Count - 1)
@@ -53,22 +81,35 @@ $source = $WebResponse.Images[$random].'data-src'
     
 # get the final portion of the web address (just the image name)
 $FileName = (Split-Path -path $source -Leaf).ToString()
-$fileExt = $FileName.Substring($FileName.Length-4,4)
+$extIndex = $FileName.IndexOf(".")
+
+$fileExt = $FileName.Substring($extIndex)
+if ($fileExt -like "*.gif*")
+{ "HEY! THIS IS A GIF" }
 
 # combine the output folder with the file name
-$output = $folder + "\" + $count + "\" + $title + $FileExt
-# $output = $folder + "\" + $FileName
+$output = $corefolder + "\" + $count + "\" + $loopDisplay + $FileExt
+# $output = $corefolder + "\" + $count + "\" + $loopIndex + " - " + $title + $FileExt
+
     
 #download the file at the http address to the output file
-Invoke-WebRequest -Uri $source -OutFile $output
+$download = Invoke-WebRequest -Uri $source -OutFile $output
+
+$newString = $loopDisplay.ToString() + " - " + $FinalTitle
+$PageList += $newString
+
+$loopIndex++
+#endregion Loop
 
 
+}
+
+$pageStrings = Out-String -InputObject $pageList
 
 # Count File Incrementation
 #region Count File Incrementation
 
 $countInt+=1
-$countInt.Length
 
 if ($countInt.Length -eq 1)
 {
@@ -87,5 +128,7 @@ elseif ($countInt.Length -eq 4)
 $countWrite = $countInt
 }
 
-Set-Content -path "$corefolder\count.txt" -Value $countWrite
+$output = Set-Content -path "$corefolder\count.txt" -Value $countWrite
+
+$newFile = New-Item -path $corefolder\$count -name "Pages.txt" -ItemType "file" -value $pageStrings
 #endregion Count File Incrementation
