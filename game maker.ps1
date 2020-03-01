@@ -1,5 +1,4 @@
-﻿
-$error.Clear()
+﻿$error.Clear()
 
 # First Run
 #region First Run
@@ -11,10 +10,10 @@ Catch { $new = New-Item -path "$corefolder\count.txt" -ItemType "file" -Value "0
 
 #endregion First Run
 
+# Init
+#region Init
 $corefolder = (Get-Location).ToString()
 
-# $coreURL = "https://www.wikihow.com"
-# $date = Get-Date -format MM-dd-yyyy
 
 # Read from file
 $count = Get-Content "$corefolder\count.txt"
@@ -25,10 +24,28 @@ $newFolder = New-Item -path $corefolder -name $count -ItemType "directory"
 
 $pageList = @()
 
+
+
 $index = 0
 $loopIndex = 0
-$loopCount = 10
+#$loopCount = 10
 
+do {
+  write-host -nonewline "Enter a numeric value: "
+  $inputString = read-host
+  $loopCount = $inputString -as [Double]
+  $ok = $value -ne $NULL
+  if ( -not $ok ) { write-host "You must enter a numeric value" }
+}
+until ( $ok )
+
+#endregion Init
+
+if ($loopCount -gt 25)
+{
+"You've asked for $loopCount images but that's too many! Reducing to 25"
+$loopCount = 25
+}
 while ($loopIndex -lt $loopCount)
 {
 $loopDisplay = $loopIndex + 1
