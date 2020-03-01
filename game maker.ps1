@@ -48,7 +48,7 @@ $start = $Content.IndexOf("<title>") + 7
 $rawtitle = $top.Substring($start)
 
 ######################################
-$RawTitle
+"raw: " + $RawTitle
 
 # remove colons!!
 if ($RawTitle -like "*:*")
@@ -59,18 +59,28 @@ $RawTitle = $RawTitle.Substring(0,$colonIndex)
 else {}
 
 # remove "(with Pictures)"
-if ($RawTitle -like "*(with pictures)")
+if ($RawTitle -like "*(with*")
 {
 $IndexOfParenthesis = $rawtitle.IndexOf("(with")
 $RawTitle = $RawTitle.Substring(0,$IndexOfParenthesis)
 }
 else {}
 
+# remove "- wikiHow XXXX"
+if ($RawTitle -like "* - wikiHow*")
+{
+$IndexOfWiki = $rawtitle.IndexOf("wikiHow") - 3
+$RawTitle = $RawTitle.Substring(0,$IndexOfWiki)
+}
+else {}
+
+
+
 $FinalTitle = $rawtitle
 #>
 
 
-$Finaltitle
+"fix: "+ $Finaltitle
 
 #endregion Get Title
 
