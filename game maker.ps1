@@ -157,5 +157,5 @@ $countWrite = $countInt
 
 $output = Set-Content -path "$corefolder\count.txt" -Value $countWrite
 
-$newFile = New-Item -path $corefolder\$count -name "Pages.txt" -ItemType "file" -value $pageStrings
+$newFile = New-Item -path $corefolder\$count -name "pages.txt" -ItemType "file" -value $pageStrings
 #endregion Count File Incrementation
