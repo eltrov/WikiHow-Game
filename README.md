@@ -9,3 +9,5 @@ Then it will pull one image (at random) from that many different articles on Wik
 The script also creates a "pages.txt" file that includes the image number and title of each page it came from.
 
 This originated as an idea for an improv game but in general the image resolution on WikiHow is too low to do what I had originally intended.
+
+I'm currently working on the "HD Remake" version that pulls more high quality images but these higher quality imagse are also watermarked with the page title they're taken from, which defeats the purpose of the 'game'.
