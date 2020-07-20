@@ -4,8 +4,19 @@
 #region Init
 $coreURL = "https://www.wikihow.com"
 $corefolder = (Get-Location).ToString()
+$error.Clear()
 
+Try {
+$newFolder = New-Item -path $corefolder -name "wiki-temp" -ItemType "directory" –ErrorAction ‘Stop’
+}
+Catch [System.IO.IOException] {
+"CATCH"
+$fullDIR = $corefolder + "\wiki-temp\"
+Remove-Item $fullDIR -Force -Recurse
 $newFolder = New-Item -path $corefolder -name "wiki-temp" -ItemType "directory"
+}
+
+$error.Clear()
 
 $pageList = @()
 
