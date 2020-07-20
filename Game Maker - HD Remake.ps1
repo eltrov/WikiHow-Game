@@ -5,7 +5,7 @@
 $coreURL = "https://www.wikihow.com"
 $corefolder = (Get-Location).ToString()
 
-$newFolder = New-Item -path $corefolder -name "temp" -ItemType "directory"
+$newFolder = New-Item -path $corefolder -name "wiki-temp" -ItemType "directory"
 
 $pageList = @()
 
@@ -129,7 +129,7 @@ if ($fileExt -like "*.gif*")
 $SourceFinal = $coreURL + $Source
 
 # combine the output folder with the file name
-$output = $corefolder + "\temp\" + $loopDisplay + $FileExt
+$output = $corefolder + "\wiki-temp\" + $loopDisplay + $FileExt
 #$output = $corefolder + "\" + $count + "\" + $loopDisplay + $FileExt
 # $output = $corefolder + "\" + $count + "\" + $loopIndex + " - " + $title + $FileExt
 
@@ -157,7 +157,7 @@ $titleIndex = $RandomTitle.IndexOf("-") + 2
 
 $RandomTitleFinal = $RandomTitle.Substring($titleIndex)
 
-$tempFolder = $corefolder + "\temp\"
+$tempFolder = $corefolder + "\wiki-temp\"
 
 $newFile = New-Item -path $tempFolder -name "pages.txt" -ItemType "file" -value $pageStrings
 
