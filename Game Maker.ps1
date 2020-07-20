@@ -1,10 +1,20 @@
-﻿$error.Clear()
-
-# Init
+﻿# Init
 #region Init
 $corefolder = (Get-Location).ToString()
 
-$newFolder = New-Item -path $corefolder -name "temp" -ItemType "directory"
+$error.Clear()
+
+Try {
+$newFolder = New-Item -path $corefolder -name "wiki-temp" -ItemType "directory" –ErrorAction ‘Stop’
+}
+Catch [System.IO.IOException] {
+"CATCH"
+$fullDIR = $corefolder + "\wiki-temp\"
+Remove-Item $fullDIR -Force -Recurse
+$newFolder = New-Item -path $corefolder -name "wiki-temp" -ItemType "directory"
+}
+
+$error.Clear()
 
 $pageList = @()
 
@@ -115,7 +125,7 @@ if ($fileExt -like "*.gif*")
 { "HEY! THIS IS A GIF" }
 
 # combine the output folder with the file name
-$output = $corefolder + "\temp\" + $loopDisplay + $FileExt
+$output = $corefolder + "\wiki-temp\" + $loopDisplay + $FileExt
 #$output = $corefolder + "\" + $count + "\" + $loopDisplay + $FileExt
 # $output = $corefolder + "\" + $count + "\" + $loopIndex + " - " + $title + $FileExt
 
@@ -142,7 +152,7 @@ $titleIndex = $RandomTitle.IndexOf("-") + 2
 
 $RandomTitleFinal = $RandomTitle.Substring($titleIndex)
 
-$tempFolder = $corefolder + "\temp\"
+$tempFolder = $corefolder + "\wiki-temp\"
 
 $newFile = New-Item -path $tempFolder -name "pages.txt" -ItemType "file" -value $pageStrings
 
